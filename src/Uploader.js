@@ -14,36 +14,36 @@ const Uploader = () =>{
     
     setUploading(true)
 
-    await fetch('https://www.mocky.io/v2/5cc8019d300000980a055e76',{
+    const uploadData =await fetch('https://www.mocky.io/v2/5cc8019d300000980a055e76',{
       method: 'POST', 
       body: data, 
-    }).then(res=>{
+    })
+    if(uploadData.status===200){
       setData([])
       setUploading(false)
-      console.log('success',data)
-      message.success('upload successfully.')
-    }).catch(err=>{
+      message.success('upload successfully')
+    }else{
       setUploading(false)
-      console.log('error')
-      message.error('upload failed.')
-    })
-  }
-  const onRemove= file => {
-    const index = data.indexOf(file)
-    const newFileList = data.slice()
-    const newData = newFileList.splice(index,1)
-    setData(newData);
+      message.error('upload failed')
+    }
     
-    console.log(data);
   }
-  const beforeUpload= file => {
+  const onRemove= (file) => {
+    const index = data.indexOf(file)
+    const newFileList = data.slice(0)
+    const deletedItem = newFileList.splice(index,1)
+    setData(newFileList);
+    console.log('new',newFileList,'deletedItem',deletedItem);
+  }
+  const beforeUpload= (file) => {
     setData([...data,file])
-    console.log('臨時上傳',typeof file,file)
     return false;
   }
+
   return (
     <>
-      <Upload onRemove={onRemove} beforeUpload={beforeUpload}>
+      {console.log(data)}
+      <Upload onRemove={onRemove} beforeUpload={beforeUpload} fileList={data}>
         <Button icon={<UploadOutlined />}>Select File</Button>
       </Upload>
       <Button
